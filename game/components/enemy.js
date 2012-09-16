@@ -4,7 +4,11 @@ game.enemy = {};
 var enm = null;
 
 game.enemy.setup = function(){
-	game.enemy.setChar(game.chars.bublegun());
+	if(game.scenes.battle.hero == game.scenes.battle.charBubblegun){
+		game.enemy.setChar(game.chars.marceline());
+	}else{
+		game.enemy.setChar(game.chars.bublegun());
+	}
 }
 
 game.enemy.destroy = function() {

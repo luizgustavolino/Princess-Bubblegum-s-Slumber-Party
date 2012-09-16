@@ -19,8 +19,8 @@ game.chars = {
 				h:190
 			},
 			speed: {
-				forward:2.4,
-				backward:1.8
+				forward:4.4,
+				backward:3.8
 			},
 			jumping: {
 				factor:.44,
@@ -30,6 +30,10 @@ game.chars = {
 				animationFrame: 0
 			},
 			lowered:{
+				active: false,
+				animationFrame: 0
+			},
+			attack:{
 				active: false,
 				animationFrame: 0
 			},
@@ -45,32 +49,44 @@ game.chars = {
 				backward: {
 					name:"bubble_backward",
 					frames:4,
-					sync: 4
+					sync: 4,
+					loop: true
 				},
 				down: {
 					name:"bubble_down",
 					frames:3,
-					sync: 4
+					sync: 4,
+					loop: false
 				},
 				forward: {
 					name:"bubble_forward",
 					frames: 4,
-					sync: 4
+					sync: 4,
+					loop: true
 				},
 				idle: {
 					name: "bubble_idle",
 					frames: 4,
-					sync: 4
+					sync: 4,
+					loop: true
 				},
 				up: {
 					name:"bubble_up",
 					frames: 3,
-					sync: 4
+					sync: 4,
+					loop: false
 				},
 				atkMiddle: {
 					name:"bubble_atk_middle",
 					frames: 4,
-					sync: 3
+					sync: 3,
+					loop: false
+				},
+				atkUp:{
+					name:"bubble_atk_up",
+					frames: 4,
+					sync: 3,
+					loop: false
 				}
 			},
 			hitAreaColor: "rgba(120,120,120,0)",
@@ -97,8 +113,8 @@ game.chars = {
 				h:190
 			},
 			speed: {
-				forward:2.0,
-				backward:2.0
+				forward:4.0,
+				backward:4.0
 			},
 			jumping: {
 				factor:.44,
@@ -108,6 +124,10 @@ game.chars = {
 				animationFrame: 0
 			},
 			lowered:{
+				active: false,
+				animationFrame: 0
+			},
+			attack:{
 				active: false,
 				animationFrame: 0
 			},
@@ -123,32 +143,44 @@ game.chars = {
 				backward: {
 					name:"marce_backward",
 					frames:4,
-					sync: 4
+					sync: 4,
+					loop: true
 				},
 				down: {
 					name:"marce_down",
 					frames:3,
-					sync: 4
+					sync: 4,
+					loop: false
 				},
 				forward: {
 					name:"marce_forward",
 					frames: 4,
-					sync: 4
+					sync: 4,
+					loop: true
 				},
 				idle: {
 					name: "marce_idle",
 					frames: 4,
-					sync: 4
+					sync: 4,
+					loop: true
 				},
 				up: {
 					name:"marce_up",
 					frames: 3,
-					sync: 4
+					sync: 4,
+					loop: false
 				},
 				atkMiddle: {
 					name:"marce_atk_middle",
 					frames: 4,
-					sync: 3
+					sync: 3,
+					loop: false,
+				},
+				atkUp:{
+					name:"marce_atk_up",
+					frames: 4,
+					sync: 3,
+					loop: false
 				}
 			},
 			hitAreaColor: "rgba(120,120,120,0)",
@@ -164,6 +196,10 @@ game.chars.stateLowered 	= 1;
 game.chars.stateJump		= 2;
 game.chars.stateForward 	= 3;
 game.chars.stateBackward 	= 4;
+
+game.chars.stateAtkUp 		= 5;
+game.chars.stateAtkMiddle 	= 6;
+game.chars.stateAtkDown 	= 7;
 
 game.chars.draw = function(_char,_frame,_flip) {
 	
@@ -191,22 +227,33 @@ game.chars.draw = function(_char,_frame,_flip) {
 	if(_char.status == game.chars.stateForward) asset = _char.assets.forward;
 	if(_char.status == game.chars.stateBackward) asset = _char.assets.backward;
 	if(_char.status == game.chars.stateLowered) asset = _char.assets.down;
-
-	//asset = _char.assets.idle;
-	//if(game.dpad.keys.left.state == game.dpad.stateKeyPressed) asset = _char.assets.backward;
-	//if(game.dpad.keys.right.state == game.dpad.stateKeyPressed) asset = _char.assets.forward;
-	//if(_char.lowered.active) asset = _char.assets.down;
-	//if(_char.jumping.life) asset = _char.assets.up;
+	
+	if(_char.status == game.chars.stateAtkMiddle) asset = _char.assets.atkMiddle;
+	if(_char.status == game.chars.stateAtkUp) asset = _char.assets.atkUp;
+	
+	// clear nonloop animations
+	for(var aKey in _char.assets){	
+		var anAsset = _char.assets[aKey];
+		if(!anAsset.loop && anAsset != asset) anAsset.animationFrame = 0;
+	}
 	
 	//frame
 	anmFrame = (Math.floor(_frame/asset.sync))%asset.frames;
-	if(_char.status == game.chars.stateLowered) {
-		var lowFrames = Math.floor(_char.lowered.animationFrame/asset.sync);
-		anmFrame = lowFrames < asset.frames ? lowFrames : asset.frames-1;
-	}
-	if(_char.status == game.chars.stateJump) {
-		var jpmFrames = Math.floor(_char.jumping.animationFrame/asset.sync);
-		anmFrame = jpmFrames < asset.frames ? jpmFrames : asset.frames-1;
+	
+	if(!asset.loop) {
+		var targetFrame = Math.floor(asset.animationFrame/asset.sync);
+		
+		if(targetFrame == asset.frames){
+			anmFrame = asset.frames -1;
+			if(asset.onAnimationFinish){
+				asset.onAnimationFinish();
+				asset.onAnimationFinish = null;
+			}
+		}else{
+			anmFrame = targetFrame;
+			asset.animationFrame += 1;
+		}
+		
 	}
 	
 	anmImage = game.resources[asset.name];

@@ -6,11 +6,29 @@ game.dpad.stateKeyPressed	= 2;
 game.dpad.stateKeyUp 		= 3;
 
 game.dpad.keys = {
-	alt:{
+	actionUp:{
 		state: 0,
 		next: 0,
 		dirty: false,
-		bindingCode: 32,
+		bindingCode: 73,
+	},
+	actionDown:{
+		state: 0,
+		next: 0,
+		dirty: false,
+		bindingCode: 75,
+	},
+	actionRight:{
+		state: 0,
+		next: 0,
+		dirty: false,
+		bindingCode: 76,
+	},
+	actionLeft:{
+		state: 0,
+		next: 0,
+		dirty: false,
+		bindingCode: 74,
 	},
 	up:{
 		state: 0,
@@ -64,7 +82,6 @@ game.dpad.update = function () {
 
 game.dpad.setup = function(){
 	document.onkeydown 	= game.dpad.keyDown;
-	document.onkeypress = game.dpad.keyPress; 
 	document.onkeyup 	= game.dpad.keyUp;
 }
 

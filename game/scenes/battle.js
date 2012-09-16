@@ -1,9 +1,15 @@
 game.scenes.battle = {};
 
+game.scenes.battle.charMarceline = 1;
+game.scenes.battle.charBubblegun = 2;
+
+game.scenes.battle.hero = game.scenes.battle.charBubblegun;
+//game.scenes.battle.hero = game.scenes.battle.charMarceline;
+
 game.scenes.battle.field = {
 	
 	arenaMargin: 20,
-	
+
 	arenaLeftCharStartx: function() {
 		return 2*game.resources.contextDom.width/6;
 	},
