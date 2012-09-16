@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  		<!--
+		  
+		  Princess Bubblegum's Slumber Party, developed by tsubasa soft. on the Adventure Time Game Jam, 2012.
+		  
+		  Code: Lino
+		  Assets: Lumi Mae
+		  
+		  Thank you for playing. 
+		  Visit our blog: tsubasa.com.br
+		  
+		 -->
+	    <title>Princess Bubblegum's Slumber Party</title>
+	    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=NO"/>
+	    <link rel="shortcut icon" href="http://tsubasa.com.br/blog/wp-content/themes/pixelpower/favicon.gif" />
+		<meta charset="utf-8">
+	    <style>
+	    	
+	    	body, div, canvas, p{
+	    	    padding: 0px;
+	    	    margin: 0px;
+	    	    -webkit-user-select: none;
+	    	}
+	    	
+	    	body{
+	    	    width:100%;
+	    	    height:100%;
+	    	    overflow:hidden;
+	    	    font-size: 0pt;
+	    	    background-color: black;
+	    	}
+	    	
+	    	#viewport{
+	    	    margin: 0px 0px 0px 0px;
+	    	}
+	    	
+	    </style>
+	    
+		<script type="text/javascript">
+			var game = {};
+			game.scenes = {};
+			var viewport = null;
+			
+		</script>
+		<script type="text/javascript" charset="utf-8" src="game/engine.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/resources.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/scenes/battle.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/components/player.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/components/dpad.js"></script>
+		<script type="text/javascript">
+	        
+	        document.addEventListener("touchmove", function(e) {
+	        	e.preventDefault();
+	        }, false);
+	        
+	    	function onBodyLoad(){
+				game.engine.bootstrap();
+	    	}
+
+		</script>
+    </head>
+    <body onload="onBodyLoad()">
+		<center>
+		    <canvas id="viewport" width="640" height="480"></canvas>
+		</center>
+    </body>
+</html>
