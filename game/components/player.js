@@ -3,7 +3,7 @@ game.player = {};
 var plr = null;
 
 game.player.setup = function(){
-	game.player.setChar(game.chars.bublegun);
+	game.player.setChar(game.chars.bublegun());
 }
 
 game.player.setChar = function(_char){
@@ -26,7 +26,9 @@ game.player.update = function(_frame){
 			}
 			
 			if(!plr.lowered && game.dpad.keys.left.state == game.dpad.stateKeyPressed){
-				plr.position.x -= plr.speed.backward;
+				if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
+					plr.position.x -= plr.speed.backward;
+				}
 			}
 			
 			if(!plr.lowered && game.dpad.keys.up.state == game.dpad.stateKeyPressed){
@@ -41,7 +43,7 @@ game.player.update = function(_frame){
 			
 		}
 	}else{
-	
+		
 		plr.jumping.life -= plr.jumping.speed;
 		if(plr.jumping.life < 0) plr.jumping.life = 0;
 		
@@ -51,8 +53,11 @@ game.player.update = function(_frame){
 			}
 		}
 		
+		
 		if(game.dpad.keys.left.state == game.dpad.stateKeyPressed){
-			plr.position.x -= plr.speed.backward*plr.jumping.movementFreedom;
+			if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
+				plr.position.x -= plr.speed.backward*plr.jumping.movementFreedom;
+			}
 		}
 		
 	}
