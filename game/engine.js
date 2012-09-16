@@ -37,8 +37,7 @@ game.engine.clear = function(){
 
 game.engine.loop = function(){
 	
-	try{
-	    
+
 	    if(!game.engine.paused){
 	        game.engine.frameCount += 1;
 	    }
@@ -51,10 +50,6 @@ game.engine.loop = function(){
 	    }
 	    
 	    game.dpad.update();
-	    
-	}catch(error){
-	    console.log("Engine Runloop error: "+error);
-	}
 	
 }
 
