@@ -10,7 +10,10 @@ game.resources.harvest = function(){
 	
 	viewport = game.resources.canvas;
 	
-    var imageSet = [];
+    var imageSet = ["bubble_backward", "bubble_down", "bubble_forward", "bubble_idle", "bubble_up",
+    "bubble_atk_middle",
+    "marce_backward", "marce_down", "marce_forward", "marce_idle", "marce_up",
+    "marce_atk_middle"];
     
     for(var i = 0; i < imageSet.length; i++){
         var imageName = imageSet[i];
@@ -18,7 +21,6 @@ game.resources.harvest = function(){
     }
     
 }
-
 
 // footer
 console.log("bootstrap: resources ready");

@@ -31,8 +31,7 @@ game.engine.showScene = function(_scene){
 }
 
 game.engine.clear = function(){
-    game.resources.canvas.fillStyle = "#FFFFFF";
-    game.resources.canvas.fillRect(0, 0, game.resources.contextDom.width, game.resources.contextDom.height);
+    game.resources.canvas.clearRect(0, 0, game.resources.contextDom.width, game.resources.contextDom.height);
 }
 
 game.engine.loop = function(){
