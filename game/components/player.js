@@ -18,108 +18,152 @@ game.player.destroy = function() {
 	
 }
 
+game.player.takeDamage = function () {
+	
+	plr.hit.timer = plr.hit.value;
+	plr.life -= 10;
+	
+	if(plr.life <= 0){
+		plr.life = 0;
+		game.engine.fx("fxLost");
+	}
+	
+	var charCenter = plr.position.center();
+	game.feather.addExplosionAt(charCenter.x, charCenter.y);
+	game.engine.fx("fxHit");
+}
+
 game.player.update = function(_frame){
 	
-	/*
-	game.chars.stateIdle 		= 0;
-	game.chars.stateLowered 	= 1;
-	game.chars.stateJump		= 2;
-	game.chars.stateForward 	= 3;
-	game.chars.stateBackward 	= 4;
-	*/
 	
-	var atacking = 	(game.dpad.keys.actionUp.state == game.dpad.stateKeyDown) || 
-					/*(game.dpad.keys.actionDown.state == game.dpad.stateKeyDown) ||*/
-					(game.dpad.keys.actionRight.state == game.dpad.stateKeyDown);
+	if(plr.life <= 0 || enm.life <= 0){
 	
-	//begin attack, only if not jumping
-	if((atacking || plr.attack.active) && plr.status != game.chars.stateJump){
-	
-		var atkAsset = null;
+		// DEAD x_x
+		if(plr.life <= 0) plr.status = game.chars.stateDead;
+		else plr.status = game.chars.stateWin;
 		
-		if(game.dpad.keys.actionRight.state == game.dpad.stateKeyDown) {
-			atkAsset = plr.assets.atkMiddle;
-		}
-		
-		if(game.dpad.keys.actionUp.state == game.dpad.stateKeyDown) {
-			atkAsset = plr.assets.atkUp;
-		}
-		
-		//if(game.dpad.keys.actionRight.state == game.dpad.stateKeyDown) atkAsset = plr.assets.atkMiddle;
-		//if(game.dpad.keys.actionRight.state == game.dpad.stateKeyDown) atkAsset = plr.assets.atkMiddle;
-		
-		if(!plr.attack.active){
-			
-			plr.attack.active = true;
-			atkAsset.onAnimationFinish = function () {
-				plr.attack.active = false;		
-			}
-			
-			if(atkAsset == plr.assets.atkMiddle){
-				plr.status = game.chars.stateAtkMiddle;
-			}else if(atkAsset == plr.assets.atkUp){
-				plr.status = game.chars.stateAtkUp;
-			}
-		}		
-		
-	// not attacking
 	}else{
 	
-		plr.status = game.chars.stateIdle;
-	
-		//not jumping
-		if(!plr.jumping.life){
+		var atacking = 	(game.dpad.keys.actionUp.state == game.dpad.stateKeyDown) || 
+						(game.dpad.keys.actionDown.state == game.dpad.stateKeyDown) ||
+						(game.dpad.keys.actionRight.state == game.dpad.stateKeyDown);
 		
-			//walk forward
-			if(!plr.lowered.active && game.dpad.keys.right.state == game.dpad.stateKeyPressed){
-				if(enm.position.x > plr.position.x+plr.size.w){
-					plr.position.x += plr.speed.forward;
-					plr.status = game.chars.stateForward;
+		// if have been hit, wait
+		if(plr.hit.timer){
+		
+			plr.hit.timer -= 1;
+			plr.attack.active = false;
+			
+			if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
+				plr.position.x -= plr.speed.backward;
+			}
+			
+			if(plr.status != game.chars.stateHitUp && plr.status != game.chars.stateHitDown
+			&& plr.status != game.chars.stateHitMiddle){
+				if(plr.status == game.chars.stateJump) plr.status = game.chars.stateHitUp;
+				else if(plr.status == game.chars.stateLowered) plr.status = game.chars.stateHitDown;
+				else plr.status = game.chars.stateHitMiddle;
+			}
+		
+		}
+		//begin attack, only if not jumping
+		else if((atacking || plr.attack.active) && plr.status != game.chars.stateJump){
+		
+			var atkAsset = null;
+			
+			if(game.dpad.keys.actionRight.state == game.dpad.stateKeyDown) atkAsset = plr.assets.atkMiddle;
+			if(game.dpad.keys.actionUp.state == game.dpad.stateKeyDown) atkAsset = plr.assets.atkUp;
+			if(game.dpad.keys.actionDown.state == game.dpad.stateKeyDown) atkAsset = plr.assets.atkDown;
+			
+			if(!plr.attack.active){
+				
+				plr.attack.active = true;
+				
+				if(atkAsset == plr.assets.atkMiddle) plr.status = game.chars.stateAtkMiddle;
+				else if(atkAsset == plr.assets.atkUp) plr.status = game.chars.stateAtkUp;
+				else if(atkAsset == plr.assets.atkDown) plr.status = game.chars.stateAtkDown;
+				
+				var enemyPreventAttack = game.enemy.willDefend(plr.status);
+				
+				atkAsset.onAnimationFinish = function () {
+					plr.attack.active = false;
 				}
-			}
-			
-			// walk backward
-			if(!plr.lowered.active && game.dpad.keys.left.state == game.dpad.stateKeyPressed){
-				if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
-					plr.position.x -= plr.speed.backward;
-					plr.status = game.chars.stateBackward;
+				
+				atkAsset.onAnimationTrigger = function () {
+					if(!enemyPreventAttack) {
+						game.enemy.takeDamage();
+					}
 				}
-			}
+				
+			}		
 			
-			// start jump
-			if(!plr.lowered.active && game.dpad.keys.up.state == game.dpad.stateKeyPressed){
-				plr.jumping.life = 100;
-			}
-			
-			// lowered
-			if(game.dpad.keys.down.state == game.dpad.stateKeyPressed){
-				plr.lowered.active = true;
-				plr.status = game.chars.stateLowered;
-			// not lowered
-			}else{
-				plr.lowered.active = false;
-			}
-			
-		// jumping
+		// not attacking
 		}else{
+		
+			plr.status = game.chars.stateIdle;
+		
+			//not jumping
+			if(!plr.jumping.life){
 			
-			plr.status = game.chars.stateJump;
-			plr.jumping.life -= plr.jumping.speed;
-			
-			if(plr.jumping.life < 0) plr.jumping.life = 0;
-			
-			if(game.dpad.keys.right.state == game.dpad.stateKeyPressed){
-				if(enm.position.x > plr.position.x+plr.size.w){
-					plr.position.x += plr.speed.forward*plr.jumping.movementFreedom;
+				//walk forward
+				if(!plr.lowered.active && game.dpad.keys.right.state == game.dpad.stateKeyPressed){
+					if(enm.position.x > plr.position.x+plr.size.w){
+						if(_frame % 8 == 0 && game.scenes.battle.hero == game.scenes.battle.charBubblegun){
+							game.engine.fx("fxStepforward");
+						}
+						plr.position.x += plr.speed.forward;
+						plr.status = game.chars.stateForward;
+					}
 				}
-			}
-			
-			if(game.dpad.keys.left.state == game.dpad.stateKeyPressed){
-				if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
-					plr.position.x -= plr.speed.backward*plr.jumping.movementFreedom;
+				
+				// walk backward
+				if(!plr.lowered.active && game.dpad.keys.left.state == game.dpad.stateKeyPressed){
+					if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
+						if(_frame % 8 == 0 && game.scenes.battle.hero == game.scenes.battle.charBubblegun){
+							game.engine.fx("fxStepbackward");
+						}
+						plr.position.x -= plr.speed.backward;
+						plr.status = game.chars.stateBackward;
+					}
 				}
+				
+				// start jump
+				if(!plr.lowered.active && game.dpad.keys.up.state == game.dpad.stateKeyPressed){
+					plr.jumping.life = 100;
+					game.engine.fx("fxJump");
+				}
+				
+				// lowered
+				if(game.dpad.keys.down.state == game.dpad.stateKeyPressed){
+					if(!plr.lowered.active) game.engine.fx("fxCrouch");
+					plr.lowered.active = true;
+					plr.status = game.chars.stateLowered;
+				// not lowered
+				}else{
+					plr.lowered.active = false;
+				}
+				
+			// jumping
+			}else{
+				
+				plr.status = game.chars.stateJump;
+				plr.jumping.life -= plr.jumping.speed;
+				
+				if(plr.jumping.life < 0) plr.jumping.life = 0;
+				
+				if(game.dpad.keys.right.state == game.dpad.stateKeyPressed){
+					if(enm.position.x > plr.position.x+plr.size.w){
+						plr.position.x += plr.speed.forward*plr.jumping.movementFreedom;
+					}
+				}
+				
+				if(game.dpad.keys.left.state == game.dpad.stateKeyPressed){
+					if(plr.position.x > game.scenes.battle.field.arenaMarginLeft()){
+						plr.position.x -= plr.speed.backward*plr.jumping.movementFreedom;
+					}
+				}
+				
 			}
-			
 		}
 	}
 	

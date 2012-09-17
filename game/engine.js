@@ -7,13 +7,16 @@ game.engine.frameCount 		= 0;
 game.engine.timer 			= null;
 game.engine.perFrameDelay 	= 1000.0/32.0;
 
+game.engine.mute			= false;
+
 game.engine.scene = null;
 
 game.engine.bootstrap = function(){
 	game.resources.harvest();
 	game.engine.timer = setInterval(game.engine.loop, game.engine.perFrameDelay);
-	game.engine.showScene(game.scenes.battle);
+	game.engine.showScene(game.scenes.title);
 	game.dpad.setup();
+	
 }
 
 game.engine.showScene = function(_scene){
@@ -52,7 +55,21 @@ game.engine.loop = function(){
 	
 }
 
+game.engine.setMute = function (_mute) {
 
+	for(var tag in game.resources.audio){
+	    var audioAsset = game.resources.audio[tag];
+		audioAsset.muted = _mute;
+	}
+	
+	game.engine.mute = _mute;
+}
+
+game.engine.fx = function (_name) {
+	game.resources.audio[_name].currentTime = 0;
+	game.resources.audio[_name].play();
+	
+}
 
 // footer
 console.log("bootstrap: engine ready");

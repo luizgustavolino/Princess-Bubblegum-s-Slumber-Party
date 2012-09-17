@@ -3,13 +3,14 @@
   <head>
   		<!--
 		  
-		  Princess Bubblegum's Slumber Party, developed by tsubasa soft. on the Adventure Time Game Jam, 2012.
+		  Princess Bubblegum's Slumber Party,
+		  developed by tsubasa soft. on the Adventure Time Game Jam, 2012.
 		  
-		  Code: Lino
-		  Assets: Lumi Mae
+		  Code: @luizGustavoLino
+		  Assets: @lumiMae
 		  
 		  Thank you for playing. 
-		  Visit our blog: tsubasa.com.br
+		  Ah! Visit our blog at tsubasa.com.br.
 		  
 		 -->
 	    <title>Princess Bubblegum's Slumber Party</title>
@@ -41,6 +42,10 @@
 	    		display: none;
 	    	}
 	    	
+	    	#rules, #game{
+	    		margin: 20px 0px 0px 0px;
+	    	}
+	    	
 	    </style>
 	    
 		<script type="text/javascript">
@@ -52,10 +57,14 @@
 		<script type="text/javascript" charset="utf-8" src="game/engine.js"></script>
 		<script type="text/javascript" charset="utf-8" src="game/resources.js"></script>
 		<script type="text/javascript" charset="utf-8" src="game/scenes/battle.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/scenes/title.js"></script>
 		<script type="text/javascript" charset="utf-8" src="game/components/player.js"></script>
 		<script type="text/javascript" charset="utf-8" src="game/components/enemy.js"></script>
 		<script type="text/javascript" charset="utf-8" src="game/components/chars.js"></script>
 		<script type="text/javascript" charset="utf-8" src="game/components/dpad.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/components/hud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="game/components/feather.js"></script>
+		
 		<script type="text/javascript">
 	        
 	        document.addEventListener("touchmove", function(e) {
@@ -65,31 +74,104 @@
 	    	function onBodyLoad(){
 				game.engine.bootstrap();
 	    	}
+	    	
+	    	var assetsLoaded = 0;
+	    	
+	    	function assetsReady() {
+	    		assetsLoaded++;
+	    		drawLoading(assetsLoaded/50);
+	    	}
+	    	
+	    	function drawLoading(_percent) {
+	    	
+	    		var contextDom = document.getElementById("viewport");
+	    		if(!contextDom) return;
+	    		
+	    		var	canvasCxt  = contextDom.getContext("2d");
+	    			
+	    		canvasCxt.strokeStyle = "#FFF";
+	    		canvasCxt.fillStyle = "#FFF";
+	    		canvasCxt.strokeRect(220,225,200,30);
+	    		canvasCxt.fillRect(222,227,196*_percent,30-4);	
+	    	}
 
 		</script>
     </head>
     <body onload="onBodyLoad()">
 		<center>
-		    <canvas id="viewport" width="640" height="480"></canvas>
+		    <div id="game">
+		    	<canvas id="viewport" width="640" height="480"></canvas>
+		    </div>
+		    <div id="rules">
+		    	<img src="game/assets/web_slumberparty_controls.png"/>
+		    </div>
 		</center>
 		<div id="assets">
 			<!-- bublegun -->
-			<img id="bubble_backward" src="game/assets/bubble_backward.png"/>
-			<img id="bubble_down" src="game/assets/bubble_down.png"/>
-			<img id="bubble_forward" src="game/assets/bubble_forward.png"/>
-			<img id="bubble_idle" src="game/assets/bubble_idle.png"/>
-			<img id="bubble_up" src="game/assets/bubble_up.png"/>
-			<img id="bubble_atk_middle" src="game/assets/bubble_atk_middle.png"/>
-			<img id="bubble_atk_up" src="game/assets/bubble_atk_up.png"/>
+			<img onload="assetsReady()" id="bubble_backward" src="game/assets/bubble_backward.png"/>
+			<img onload="assetsReady()" id="bubble_down" src="game/assets/bubble_down.png"/>
+			<img onload="assetsReady()" id="bubble_forward" src="game/assets/bubble_forward.png"/>
+			<img onload="assetsReady()" id="bubble_idle" src="game/assets/bubble_idle.png"/>
+			<img onload="assetsReady()" id="bubble_up" src="game/assets/bubble_up.png"/>
+			<img onload="assetsReady()" id="bubble_atk_middle" src="game/assets/bubble_atk_middle.png"/>
+			<img onload="assetsReady()" id="bubble_atk_up" src="game/assets/bubble_atk_up.png"/>
+			<img onload="assetsReady()" id="bubble_atk_down" src="game/assets/bubble_atk_down.png"/>
+			<img onload="assetsReady()" id="bubble_hit_down" src="game/assets/bubble_hit_down.png"/>
+			<img onload="assetsReady()" id="bubble_hit_up" src="game/assets/bubble_hit_up.png"/>
+			<img onload="assetsReady()" id="bubble_hit_middle" src="game/assets/bubble_hit_midle.png"/>
+			<img onload="assetsReady()" id="bubble_win" src="game/assets/bubble_win.png"/>
 			
 			<!-- marceline -->
-			<img id="marce_backward" src="game/assets/marce_backward.png"/>
-			<img id="marce_down" src="game/assets/marce_down.png"/>
-			<img id="marce_forward" src="game/assets/marce_forward.png"/>
-			<img id="marce_idle" src="game/assets/marce_idle.png"/>
-			<img id="marce_up" src="game/assets/marce_up.png"/>
-			<img id="marce_atk_middle" src="game/assets/marce_atk_middle.png"/>
-			<img id="marce_atk_up" src="game/assets/marce_atk_up.png"/>
+			<img onload="assetsReady()" id="marce_backward" src="game/assets/marce_backward.png"/>
+			<img onload="assetsReady()" id="marce_down" src="game/assets/marce_down.png"/>
+			<img onload="assetsReady()" id="marce_forward" src="game/assets/marce_forward.png"/>
+			<img onload="assetsReady()" id="marce_idle" src="game/assets/marce_idle.png"/>
+			<img onload="assetsReady()" id="marce_up" src="game/assets/marce_up.png"/>
+			<img onload="assetsReady()" id="marce_atk_middle" src="game/assets/marce_atk_middle.png"/>
+			<img onload="assetsReady()" id="marce_atk_up" src="game/assets/marce_atk_up.png"/>
+			<img onload="assetsReady()" id="marce_atk_down" src="game/assets/marce_atk_down.png"/>
+			<img onload="assetsReady()" id="marce_hit_down" src="game/assets/marce_hit_down.png"/>
+			<img onload="assetsReady()" id="marce_hit_up" src="game/assets/marce_hit_up.png"/>
+			<img onload="assetsReady()" id="marce_hit_middle" src="game/assets/marce_hit_middle.png"/>
+			<img onload="assetsReady()" id="marce_win" src="game/assets/marce_win.png"/>
+			
+			<!-- random -->
+			<img onload="assetsReady()" id="background" src="game/assets/background.jpg"/>
+			<img onload="assetsReady()" id="lifebar_empty" src="game/assets/lifebar_empty.png"/>
+			<img onload="assetsReady()" id="lifebar_bubble" src="game/assets/lifebar_bubble.png"/>
+			<img onload="assetsReady()" id="lifebar_marce" src="game/assets/lifebar_marce.png"/>
+			<img onload="assetsReady()" id="profile_bubble_small" src="game/assets/profile_bubble_small.png"/>
+			<img onload="assetsReady()" id="profile_marce_small" src="game/assets/profile_marce_small.png"/>
+			<img onload="assetsReady()" id="titlescreen" src="game/assets/titlescreen.jpg"/>
+			
+			<img onload="assetsReady()" id="select_bubble" src="game/assets/select_bubble.png"/>
+			<img onload="assetsReady()" id="select_marce" src="game/assets/select_marce.png"/>
+			<img onload="assetsReady()" id="selection" src="game/assets/selection.png"/>
+			<img onload="assetsReady()" id="feathers" src="game/assets/feathers.png"/>
+			
+			<img onload="assetsReady()" id="marce_death" src="game/assets/marce_death.png"/>
+			<img onload="assetsReady()" id="bubble_death" src="game/assets/bubble_death.png"/>
+			
+			<img onload="assetsReady()" id="endbox_loose" src="game/assets/endbox_loose.png"/>
+			<img onload="assetsReady()" id="endbox_win" src="game/assets/endbox_win.png"/>
+			<img onload="assetsReady()" id="jiggler" src="game/assets/jiggler.png"/>
+			
+			<!-- AUDIO -->
+			<audio id="ostCanopy" oncanplaythrough="assetsReady()" loop autoplay preload="auto">
+				<source src="game/audio/canopy.ogg" type="audio/ogg" />
+				<source src="game/audio/canopy.mp3" type="audio/mp3" />
+			</audio>
+			
+			<audio oncanplaythrough="assetsReady()" id="fxAttack" src="game/audio/attack.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxCrouch" src="game/audio/crouch.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxHit" src="game/audio/hit.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxJump" src="game/audio/jump.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxLost" src="game/audio/lost.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxSelect" src="game/audio/select.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxStepbackward" src="game/audio/stepbackward.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxStepforward" src="game/audio/stepforward.wav" preload="auto"></audio>
+			<audio oncanplaythrough="assetsReady()" id="fxWin" src="game/audio/win.wav" preload="auto"></audio>
+			
 		</div>
     </body>
 </html>
