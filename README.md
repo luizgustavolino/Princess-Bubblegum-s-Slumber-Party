@@ -4,6 +4,8 @@ PLAY ONLINE HERE: http://www.adventuretimegamejam.com/submissions/71-princess-bu
       
 | (• ◡•)|╯╰(❍ᴥ❍ʋ)
 
+![screenshot](http://tsubasa.com.br/blog/wp-content/uploads/2012/09/pbslumberparty_preview.png)
+
 ======================================================================================================
 
 Princess-Bubblegum-s-Slumber-Party
