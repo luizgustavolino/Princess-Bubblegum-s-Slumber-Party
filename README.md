@@ -1,12 +1,9 @@
-======================================================================================================
-
-PLAY ONLINE HERE: http://www.adventuretimegamejam.com/submissions/71-princess-bubblegum-s-slumber-party
-      
 | (• ◡•)|╯╰(❍ᴥ❍ʋ)
 
+*PLAY ONLINE HERE:*
+http://www.adventuretimegamejam.com/submissions/71-princess-bubblegum-s-slumber-party
+     
 ![screenshot](http://tsubasa.com.br/.blog/wp-content/uploads/2012/09/pbslumberparty_preview.png)
-
-======================================================================================================
 
 Princess-Bubblegum-s-Slumber-Party
 developed by tsubasa soft. on the Adventure Time Game Jam, 2012.
